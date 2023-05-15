@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
-import MapView, { Circle, Marker } from "react-native-maps";
+import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import MapView, { Callout, Circle, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import arrayDeObjetos from "../mocks/mockEvents";
 import colors from "../global";
+import SideMenu from "../components/SideMenu";
+import { Entypo } from "@expo/vector-icons";
+import SidebarMenuContent from "../components/SidebarMenuContent";
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 interface ILocation {
   coords: {
@@ -17,9 +21,18 @@ interface ILocation {
   };
 }
 
-const Home: React.FC = () => {
+type DrawerNavigatorParams = {
+  SettingsScreen: undefined;
+}
+
+type SettingsScreenProps = {
+  navigation: DrawerNavigationProp<DrawerNavigatorParams, 'SettingsScreen'>;
+}
+
+const Home: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const [location, setLocation] = useState<ILocation>({} as ILocation);
   const [errorMsg, setErrorMsg] = useState("");
+  const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
 
   const LATITUDE_DELTA = 0.05;
   const LONGITUDE_DELTA = 0.05;
@@ -31,13 +44,14 @@ const Home: React.FC = () => {
         coordinate={{ latitude: objeto.latitude, longitude: objeto.longitude }}
         title={objeto.title}
         description={objeto.shotDescription}
+
       >
         <View style={styles.marker}>
           <Image
             source={objeto.img}
             style={{
-              width: 40,
-              height: 40,
+              width: 50,
+              height: 50,
               borderRadius: 25,
               borderWidth: 3,
               alignItems: "center",
@@ -65,9 +79,10 @@ const Home: React.FC = () => {
       }
       let location = await Location.getCurrentPositionAsync({});
 
-      setLocation(location);
+      setLocation(location as ILocation);
     })();
   }, []);
+
   return (
     <View style={styles.container}>
       {location && location.coords && (
@@ -92,6 +107,9 @@ const Home: React.FC = () => {
           {renderMarkers(arrayDeObjetos)}
         </MapView>
       )}
+      <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
+        <Entypo name="menu" size={24} color="black" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -106,13 +124,31 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   marker: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     borderRadius: 25,
     borderWidth: 3,
     borderColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
   },
+  menuButton: {
+    position: "absolute",
+    top: 60,
+    left: 30,
+    backgroundColor: "#FFF",
+    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  menuButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  callout: {
+    width: 2000,
+  }
 });
+
 export default Home;
