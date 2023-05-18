@@ -1,88 +1,98 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  ImageBackground,
-} from "react-native";
-import colors from "../global";
+import React from 'react';
+import { View, ImageBackground, Image, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import firebase from '../firebaseConfig';
 
-export default function LoginScreen() {
-  const bgImg = require("./assets/backgroundMap.jpg");
-  const logo = require("./assets/LogoG.png");
+const LoginScreen: React.FC = () => {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
-  const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const login = () => {
+    try {
+      firebase.authsignInWithEmailAndPassword(email, password)
+    }
+    catch (error) {
 
-  const handleLogin = () => {
-    navigation.navigate("Home");
-  };
+      console.log(error)
+    }
+
+  }
 
   return (
     <View style={styles.container}>
-      <Image source={logo} style={styles.logo} />
-      <TextInput
-        style={styles.input}
-        placeholder="E-mail"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Entrar</Text>
-      </TouchableOpacity>
+      <ImageBackground source={require('./assets/backgroundMap.jpg')} style={styles.backgroundImage}>
+        <View style={styles.card}>
+          <Image source={require('./assets/LogoG.png')} style={styles.logo} />
+          <TextInput placeholder="Login" onChange={(e) => setEmail(e.nativeEvent.text)} style={styles.input} />
+          <TextInput placeholder="Senha" onChange={(e) => setPassword(e.nativeEvent.text)} secureTextEntry style={styles.input} />
+          <TouchableOpacity style={styles.linkButton} onPress={login}>
+            <Text style={styles.linkButtonText}>Entrar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Login com Google</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Login com Facebook</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.linkButton}>
+            <Text style={styles.linkButtonText}>Primeiro acesso</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.linkButton}>
+            <Text style={styles.linkButtonText}>Esqueci minha senha</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#f0f0f0",
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
+  card: {
+    backgroundColor: '#FFF',
+    margin: 20,
+    padding: 20,
+    borderRadius: 15,
+    elevation: 5,
   },
   logo: {
-    marginBottom: 30,
+    width: 100,
+    height: 130,
+    alignSelf: 'center',
+    marginBottom: 20,
   },
   input: {
-    backgroundColor: "#fff",
     borderWidth: 1,
-    borderRadius: 5,
-    paddingVertical: 0,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    width: "100%",
-    fontSize: 14,
-    borderColor: colors.orangeLogo,
+    borderColor: '#999',
+    borderRadius: 20,
+    padding: 5,
+    paddingHorizontal: 20,
+    marginBottom: 10,
   },
   button: {
-    marginHorizontal: 20,
-    backgroundColor: colors.orangeLogo,
+    backgroundColor: '#3498db',
+    padding: 10,
     borderRadius: 5,
-    padding: 15,
-    width: "100%",
-    alignItems: "center",
+    marginBottom: 10,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+    color: '#FFF',
+    textAlign: 'center',
+  },
+  linkButton: {
+    padding: 10,
+    marginBottom: 10,
+  },
+  linkButtonText: {
+    color: '#3498db',
+    textAlign: 'center',
   },
 });
+
+export default LoginScreen;

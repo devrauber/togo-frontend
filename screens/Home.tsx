@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
-import MapView, { Callout, Circle, Marker } from "react-native-maps";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import MapView, { Circle, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import arrayDeObjetos from "../mocks/mockEvents";
-import colors from "../global";
-import SideMenu from "../components/SideMenu";
 import { Entypo } from "@expo/vector-icons";
-import SidebarMenuContent from "../components/SidebarMenuContent";
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import ImageResizer from "react-native-image-resizer";
 
 interface ILocation {
   coords: {
@@ -32,19 +30,24 @@ type SettingsScreenProps = {
 const Home: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const [location, setLocation] = useState<ILocation>({} as ILocation);
   const [errorMsg, setErrorMsg] = useState("");
-  const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
+  const [response, setResponse] = useState<any[]>([]);
 
   const LATITUDE_DELTA = 0.05;
   const LONGITUDE_DELTA = 0.05;
 
-  function renderMarkers(arrayDeObjetos: any[]) {
-    return arrayDeObjetos.map((objeto) => (
+  const getResponseApi = async () => {
+    // const response = await fetch("https://api.b7web.com.br/cinema/");
+    // const json = await response.json();
+    setResponse(arrayDeObjetos);
+  }
+
+  function renderMarkers(response: any[]) {
+    return response.map((objeto) => (
       <Marker
         key={objeto.id}
         coordinate={{ latitude: objeto.latitude, longitude: objeto.longitude }}
         title={objeto.title}
         description={objeto.shotDescription}
-
       >
         <View style={styles.marker}>
           <Image
@@ -59,7 +62,7 @@ const Home: React.FC<SettingsScreenProps> = ({ navigation }) => {
             }}
           />
         </View>
-      </Marker>
+      </Marker >
     ));
   }
 
@@ -82,6 +85,10 @@ const Home: React.FC<SettingsScreenProps> = ({ navigation }) => {
       setLocation(location as ILocation);
     })();
   }, []);
+
+  useEffect(() => {
+    getResponseApi()
+  }, [])
 
   return (
     <View style={styles.container}>

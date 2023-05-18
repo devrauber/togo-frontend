@@ -17,6 +17,7 @@ import { useState } from "react";
 import Settings from "./components/Settings";
 import colors from "./global";
 import { AntDesign } from "@expo/vector-icons";
+import Footer from "./components/Footer";
 
 const Drawer = createDrawerNavigator();
 
@@ -85,9 +86,12 @@ export default function App() {
         drawerContent={(props) => (
           <CustomDrawerContent {...props} loggedIn={loggedIn} />
         )}
-
       >
-        <Drawer.Screen name="Login" component={Login} />
+        <Drawer.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
         <Drawer.Screen
           name="Mapa"
           component={Home}
@@ -95,7 +99,7 @@ export default function App() {
         />
         <Drawer.Screen name="Configurações" component={Settings} />
       </Drawer.Navigator>
-      {/* <Footer /> */}
+      <Footer onPress={() => null} />
     </NavigationContainer>
   );
 }
