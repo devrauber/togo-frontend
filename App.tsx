@@ -18,6 +18,7 @@ import Settings from "./components/Settings";
 import colors from "./global";
 import { AntDesign } from "@expo/vector-icons";
 import Footer from "./components/Footer";
+import SignUp from "./screens/SignUp";
 
 const Drawer = createDrawerNavigator();
 
@@ -82,7 +83,7 @@ export default function App() {
           drawerInactiveTintColor: colors.orangeLogo,
           drawerActiveBackgroundColor: colors.orangeLogo,
         }}
-        initialRouteName="Mapa"
+        initialRouteName="Home"
         drawerContent={(props) => (
           <CustomDrawerContent {...props} loggedIn={loggedIn} />
         )}
@@ -93,8 +94,13 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Drawer.Screen
-          name="Mapa"
+          name="Home"
           component={Home}
+          options={{ headerShown: false }}
+        />
+        <Drawer.Screen
+          name="SignUp"
+          component={SignUp}
           options={{ headerShown: false }}
         />
         <Drawer.Screen name="Configurações" component={Settings} />

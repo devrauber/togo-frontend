@@ -1,6 +1,7 @@
-import firebase from 'firebase/app';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 
-const firebaseConfig = {
+const firebaseConfig: any = {
   apiKey: "AIzaSyBJUFZ4q8Z-XWtg1uwqLrY6BorMH5hDaRo",
   authDomain: "togo-b3cd9.firebaseapp.com",
   projectId: "togo-b3cd9",
@@ -10,10 +11,5 @@ const firebaseConfig = {
   measurementId: "G-2DY52GEWDQ",
 };
 
+export const app = initializeApp(firebaseConfig);
 
-const Firebase = () => { firebase.initializeApp(firebaseConfig) };
-if (!firebase.apps.length) {
-  Firebase();
-}
-
-export default Firebase;

@@ -1,12 +1,18 @@
 import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-
+import { useNavigation } from '@react-navigation/native';
 interface BottomBarProps {
   onPress: (section: number) => void;
 }
 
 const Footer: React.FC<BottomBarProps> = ({ onPress }) => {
+  const navigation = useNavigation()
+
+  const onLoginPress = () => {
+    navigation.navigate("Home")
+  }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -23,7 +29,10 @@ const Footer: React.FC<BottomBarProps> = ({ onPress }) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.home}
-        onPress={() => onPress(2)}
+        onPress={() => {
+          onPress(2);
+          onLoginPress()
+        }}
       >
         <MaterialCommunityIcons name="home-outline" size={24} color="black" />
       </TouchableOpacity>

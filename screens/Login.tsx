@@ -1,45 +1,60 @@
 import React from 'react';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { View, ImageBackground, Image, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import firebase from '../firebaseConfig';
+import { app } from '../firebaseConfig';
+import { AntDesign } from '@expo/vector-icons';
+import colors from '../global';
+import Separator from '../components/Separator';
+import Card from '../components/Card';
+import { useNavigation } from '@react-navigation/native';
+
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const navigation = useNavigation();
 
-  const login = () => {
-    try {
-      firebase.authsignInWithEmailAndPassword(email, password)
-    }
-    catch (error) {
-
-      console.log(error)
-    }
-
+  const auth = getAuth(app);
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
   }
 
   return (
     <View style={styles.container}>
       <ImageBackground source={require('./assets/backgroundMap.jpg')} style={styles.backgroundImage}>
-        <View style={styles.card}>
+        <Card>
           <Image source={require('./assets/LogoG.png')} style={styles.logo} />
           <TextInput placeholder="Login" onChange={(e) => setEmail(e.nativeEvent.text)} style={styles.input} />
           <TextInput placeholder="Senha" onChange={(e) => setPassword(e.nativeEvent.text)} secureTextEntry style={styles.input} />
-          <TouchableOpacity style={styles.linkButton} onPress={login}>
-            <Text style={styles.linkButtonText}>Entrar</Text>
+          <TouchableOpacity style={styles.linkButton} onPress={handleLogin}>
+            <Text style={styles.button}>Entrar</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Login com Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Login com Facebook</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.linkButton}>
-            <Text style={styles.linkButtonText}>Primeiro acesso</Text>
-          </TouchableOpacity>
+          <Separator hasOr />
+          <View style={styles.viewSocialButtons}>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}><AntDesign name="google" size={24} color="white" /></Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}><AntDesign name="facebook-square" size={24} color="white" /></Text>
+            </TouchableOpacity>
+          </View>
+          <Separator />
           <TouchableOpacity style={styles.linkButton}>
             <Text style={styles.linkButtonText}>Esqueci minha senha</Text>
           </TouchableOpacity>
-        </View>
+          <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('SignUp')}>
+            <Text style={styles.linkButtonText}>Primeiro acesso</Text>
+          </TouchableOpacity>
+        </Card>
       </ImageBackground>
     </View>
   );
@@ -53,13 +68,6 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'center',
-  },
-  card: {
-    backgroundColor: '#FFF',
-    margin: 20,
-    padding: 20,
-    borderRadius: 15,
-    elevation: 5,
   },
   logo: {
     width: 100,
@@ -76,23 +84,31 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   button: {
-    backgroundColor: '#3498db',
+    backgroundColor: colors.orangeLogo,
     padding: 10,
     borderRadius: 5,
-    marginBottom: 10,
+    textAlign: "center",
+    color: '#fff',
+    fontWeight: 'bold'
+
   },
   buttonText: {
     color: '#FFF',
     textAlign: 'center',
   },
   linkButton: {
-    padding: 10,
-    marginBottom: 10,
+    padding: 5,
   },
   linkButtonText: {
-    color: '#3498db',
+    color: colors.orangeLogo,
     textAlign: 'center',
   },
+  viewSocialButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 20,
+  }
 });
 
 export default LoginScreen;
